@@ -1,0 +1,36 @@
+---
+- name: PHP | Ajout de ondrej/php dans le depot
+  apt_repository:
+    repo: "ppa:ondrej/php"
+
+    #Installation de php 
+- name: Installation de php
+  apt:
+    update_cache: yes
+    name:
+      - "php {{ php_version}}-fpm"
+      - "php {{ php_version}}-mysql"
+      - "php {{ php_version}}-mbstring"
+      - "php {{ php_version}}-xml"
+      - "php {{ php_version}}-zip"
+    state: present
+
+# Installation de composer pour utilisé laravel
+- name: PHP | Composer
+  shell: |
+    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    php composer-setup.php
+    php -r "unlink('composer-setup.php');"
+    mv composer.phar /usr/local/bin/composer
+  creates: /usr/local/bin/composer
+
+#Permet de s'assurer qu'on a pas des erreurs lors de l'installation de php
+- name: PHP | Désactiver les erreurs
+  lineinfile:
+    dest: "/etc/php/{{ php_version }}/fpm/php.ini"
+    regexp: "display_errors = "
+    line: "display_errors = 0 "
+  notify: php restart
+
+

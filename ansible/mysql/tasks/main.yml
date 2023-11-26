@@ -1,0 +1,52 @@
+---
+- name: MySQL | Installation de mysql
+  apt:
+    name: 
+      - mysql-server
+      - python-mysqlbd # Permet à ansible d'utiliser le module mysql, permet de manupiler et gerer mysql
+    state: present
+  
+- name: MySQL | Definitions de password root
+  mysql_user: 
+    check_implicit_admin: true #vérification de l'administrateur implicite
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    user: root
+    host: localhost
+    password: "{{ mysql_root_password }}"
+
+- name: MySQL | Supprimer l'utilisateur anonyme
+  mysql_user: 
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    user: ""
+  state: absent
+
+  
+- name: MySQL | Supprimer la base de donnee test cree par defaut
+  mysql_db: 
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    db: test
+  state: absent
+
+
+- name: "MySQL | Creation de la base de donnee {{mysql_db}}"
+  mysql_db: 
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    db: "{{mysql_db}}"
+  state: present
+
+- name: MySQL | Creation de l'utilisateur qui tout le droit sur la base {{ mysql_user }}
+  mysql_user: 
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: "{{mysql_user}}"
+    password: "{{ mysql_root_password }}"
+    host: localhost
+    priv: "{{ mysql_db}}.*:ALL"
+    state: present
+    
+
+

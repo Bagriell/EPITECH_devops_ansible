@@ -1,0 +1,43 @@
+---
+- name: Installation du serveur
+  hosts: 192.168.56.20
+  remote_user: root
+  tasks:
+  - name: "USER | Creation de {{user}}"
+    user:
+      name: "{{user}}"
+      shell: /bin/bash/
+  - name: User | Clef SSH
+    authorized_key:
+      user: "{{user}}"
+      state: present
+      key: "{{ lookup('file, '~/.ssh/id_rsa.pub') }}"
+
+      #Ajout de l'utilisateur dans Sudoers pour le droit de l'admin
+  # - name: "User| Sudoers {{ user }}"
+  #   lineinfile:
+  #     dest: /etc/sudoers
+  #     state: present
+  #     regexp: "^{{ user }}"
+  #     line: '{{ user }} ALL=(ALL) NOPASSWD: ALL'
+  #     validate: 'visudo -cf %s'
+
+  #Mise à jour de derniere version de tous les packages installés
+  - name: APT | Update & Upgrade
+    apt:
+      upgrade: dist
+      update_cache: yes
+
+
+  # Inclure les roles tools
+  - include_role:
+    name: tools
+
+  # # Inclure les roles php
+  - include_role:
+    name: php
+
+  
+  
+
+

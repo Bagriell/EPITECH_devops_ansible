@@ -1,0 +1,10 @@
+---
+- name: Ngnix | Installation de Ngnix
+  apt:
+    name: ngnix
+    state: present
+
+- name: Ngnix | Modification de vhost par default
+  template:
+    src: default.j2
+    dest: "/etc/ngnix/sites-available/default"

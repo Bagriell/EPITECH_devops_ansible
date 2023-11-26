@@ -1,0 +1,12 @@
+
+server {
+    listen 80;
+    listen [::]:80; 
+    server_name {{ domain }};
+    
+    root {{ ansistrano_deploy_to }}/current/public;
+
+    add_header XFrame-Options "SAMEORIGIN";
+    add_header X-XSS-Protection "1; mode=block";
+    add_header X-Content-Type-Options "nosniff";
+}

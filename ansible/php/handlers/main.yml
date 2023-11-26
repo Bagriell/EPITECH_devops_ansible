@@ -1,0 +1,6 @@
+---
+#Redemarer le service
+- name: php restart
+  service:
+    name: "php{{php_version}}-fpm"
+    state: restarted

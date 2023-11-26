@@ -1,0 +1,11 @@
+php_version: 8.1
+domain: mysite.fr
+mysql_db: mysite
+mysql_user: mysite
+
+npm_globals:
+  - pm2
+  - laravel-echo-server
+ansistrano_deploy_to: /home/{{ user}}/{{domain}}
+mysql_password: donner le password chiffre
+mysql_root_password: donner le password chiffre
